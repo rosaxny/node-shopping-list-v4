@@ -62,7 +62,6 @@ app.put('/shopping-list/:id', jsonParser, (req, res) => {
       return res.status(400).send(message);
     }
   }
-
   if (req.params.id !== req.body.id) {
     const message = `Request path id (${req.params.id}) and request body id (${req.body.id}) must match`;
     console.error(message);
@@ -73,6 +72,29 @@ app.put('/shopping-list/:id', jsonParser, (req, res) => {
     id: req.params.id,
     name: req.body.name,
     budget: req.body.budget
+  });
+  res.status(204).end();
+});
+
+app.put('/recipes/:id', jsonParser, (req, res) => {
+  const requiredFields = ['name', 'ingredients'];
+  for(let i = 0;i<requiredFields.length; i++) {
+    if(!requiredFields[i] in req.body) {
+      const message = `Missing \`${requiredFields[i]}\` in request body`;
+      console.log(message);
+      return res.status(400).send(message);
+    }
+  }
+  if(req.params.id !== req.body.id) {
+    const message = `Request path id (${req.params.id}) and request body id (${req.body.id}) must match`;
+    console.error(message);
+    return res.status(400).send(message);
+  }
+  console.log(`Updating recipes \`${req.params.id}\``);
+  Recipes.update({
+    id: req.params.id,
+    name: req.body.name,
+    ingredients: req.body.ingredients
   });
   res.status(204).end();
 });
